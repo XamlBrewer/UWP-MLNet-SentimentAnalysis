@@ -32,13 +32,13 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="XamlBrewer.Uwp.MLNet.SentimentAnalysis.App">
       <uap:VisualElements
-        DisplayName="XamlBrewer.Uwp.MLNet.SentimentAnalysis"
+        DisplayName="XAML Brewer UWP ML.NET Sentiment Analysis"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="XamlBrewer.Uwp.MLNet.SentimentAnalysis"
+        Description="XAML Brewer UWP ML.NET Sentiment Analysis"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="lightSlateGray"/>
       </uap:VisualElements>
     </Application>
   </Applications>
