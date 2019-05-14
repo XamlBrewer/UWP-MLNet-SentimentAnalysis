@@ -31,12 +31,12 @@
                Grid.RowSpan="10"
                Grid.ColumnSpan="2"
                Margin="0 0 20 0" />
-        <TextBlock TextAlignment="Right"
-                   TextWrapping="Wrap"
+        <TextBlock TextWrapping="Wrap"
+                   FontSize="20"
                    Margin="0 0 0 20"
                    Grid.Column="1"
                    Grid.ColumnSpan="2">
-                <Run>Honorable user, we value your feedback. Please rate this app with some stars and describe why.</Run>
+                <Run>This app consumes an ML.NET Sentiment Analysis model to validate a star rating against the provided comments.</Run>
         </TextBlock>
         <RatingControl x:Name="RatingStars"
                        HorizontalAlignment="Right"

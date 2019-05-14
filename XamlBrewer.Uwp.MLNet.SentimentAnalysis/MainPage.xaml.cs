@@ -1,5 +1,4 @@
 ﻿using Microsoft.ML;
-using Microsoft.ML.Data;
 using System;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -35,6 +34,9 @@ namespace XamlBrewer.Uwp.MLNet.SentimentAnalysis
 
             var appInstalledFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
             var assets = await appInstalledFolder.GetFolderAsync("Assets");
+
+            // Original zip file at
+            // https://github.com/dotnet/samples/tree/master/machine-learning/models/sentimentanalysis
             var file = await assets.GetFileAsync("sentiment_model.zip");
             var filePath = file.Path;
 
@@ -43,30 +45,40 @@ namespace XamlBrewer.Uwp.MLNet.SentimentAnalysis
                 inputSchema: out _);
 
             _engine = mlContext.Model.CreatePredictionEngine<SentimentData, SentimentPrediction>(model);
-
-            var res = _engine.Predict(new SentimentData { SentimentText = "This was a horrible meal" });
-            res = _engine.Predict(new SentimentData { SentimentText = "I love this spaghetti" });
         }
 
         public class SentimentData
         {
             public string SentimentText;
-
-            [ColumnName("Label")]
-            public bool Sentiment;
         }
 
-        public class SentimentPrediction : SentimentData
+        public class SentimentPrediction
         {
-            [ColumnName("PredictedLabel")]
-            public bool Prediction { get; set; }
+            public bool PredictedLabel { get; set; }
 
             public float Probability { get; set; }
 
             public float Score { get; set; }
 
-            public string SentimentAsText => Prediction ? "positive" : "negative";
+            public string SentimentAsText => PredictedLabel ? "positive" : "negative";
         }
+
+        //// For reference, these were the input and output classes for training:
+        ////
+        ////public class SentimentData
+        ////{
+        ////    public string SentimentText;
+        ////    [ColumnName("Label")]
+        ////    public bool Sentiment;
+        ////}
+        ////
+        ////public class SentimentPrediction : SentimentData
+        ////{
+        ////    [ColumnName("PredictedLabel")]
+        ////    public bool Prediction { get; set; }
+        ////    public float Probability { get; set; }
+        ////    public float Score { get; set; }
+        ////}
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -74,16 +86,17 @@ namespace XamlBrewer.Uwp.MLNet.SentimentAnalysis
             ResultText.Text = $"With a score of {result.Score} we are {result.Probability * 100}% sure that the tone of your comment is {result.SentimentAsText}.";
 
             var stars = RatingStars.Value;
-            if ((stars <= 2 && result.Prediction) || (stars >= 4 && !result.Prediction))
+            if ((stars <= 2 && result.PredictedLabel) || (stars >= 4 && !result.PredictedLabel))
             {
-                ResultText.Text += Environment.NewLine + Environment.NewLine + "This is NOT in sync with the number of stars.";
+                ResultText.Text += Environment.NewLine + Environment.NewLine + "This does NOT correspond to the number of stars you granted.";
                 ResultText.Text += Environment.NewLine + Environment.NewLine + "We are not amused.";
                 PassedImage.Visibility = Visibility.Collapsed;
                 FailedImage.Visibility = Visibility.Visible;
             }
             else
             {
-                ResultText.Text += Environment.NewLine + Environment.NewLine + "This is in sync with the number of stars.";
+                ResultText.Text += Environment.NewLine + Environment.NewLine + "This corresponds to the number of stars you granted.";
+                ResultText.Text += Environment.NewLine + Environment.NewLine + "We take your feedback seriously.";
                 FailedImage.Visibility = Visibility.Collapsed;
                 PassedImage.Visibility = Visibility.Visible;
             }
