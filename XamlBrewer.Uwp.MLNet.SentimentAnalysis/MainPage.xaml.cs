@@ -1,5 +1,6 @@
 ﻿using Microsoft.ML;
 using System;
+using System.Collections.Generic;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -43,6 +44,10 @@ namespace XamlBrewer.Uwp.MLNet.SentimentAnalysis
             var model = mlContext.Model.Load(
                 filePath: filePath,
                 inputSchema: out _);
+
+            // Double check the output schema.
+            var dataView = mlContext.Data.LoadFromEnumerable<SentimentData>(new List<SentimentData>());
+            var outputSchema = model.GetOutputSchema(dataView.Schema);
 
             _engine = mlContext.Model.CreatePredictionEngine<SentimentData, SentimentPrediction>(model);
         }
